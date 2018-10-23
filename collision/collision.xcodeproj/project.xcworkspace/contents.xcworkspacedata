@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:002-loadObj.xcodeproj">
+      location = "self:collision.xcodeproj">
    </FileRef>
 </Workspace>
