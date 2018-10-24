@@ -4,7 +4,9 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include <math.h>
-//#include <GLUT/GLUT.h>
+#include <vector>
+using namespace std;
+
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -23,6 +25,7 @@
 #define MAX_CHAR 128
 
 
+
 GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
 GLvoid DrawGrid3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLint edgeLength );
 GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
@@ -30,6 +33,10 @@ GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, 
 GLvoid DrawPoints(GLfloat x, GLfloat y, GLfloat z);
 GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z);
 //GLvoid DrawLine(GLfloat *p1, GLfloat *p2);
+
+GLvoid DrawPoints();
+vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir);
+
 
 GLvoid printtext(int x, int y, std::string String);
 
@@ -42,7 +49,6 @@ GLfloat *Interp(GLfloat *p1,GLfloat *p2, GLfloat *newp, GLfloat sdfm, GLfloat sd
 GLfloat *EdgePos(GLint edge, GLfloat **vertices);
 GLfloat **cellVertices3D(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength);
 GLfloat **cellVertices2D(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength);
-
 GLfloat sdf(GLfloat x, GLfloat y, GLfloat z);
 
 GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int mods );
@@ -60,11 +66,16 @@ GLfloat rotationY = 40.0f;
 GLint cubeNum = 1;
 GLint shapeId = 0; //0:sphere  1:
 GLint Dimension = 3;   //0:2d   1:3d
-
+GLint p_click = 0;
 
 GLfloat randx = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_WIDTH/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
 GLfloat randy = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_HEIGHT/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
 GLfloat randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
+
+//GLfloat *sdfDis = new GLfloat[pow(2*GRID_SCALE+1,Dimension)];
+//GLfloat sdfDis[7*7*7][8];
+
+
 
 int main( void )
 {
@@ -96,6 +107,7 @@ int main( void )
     
     GLfloat halfScreenWidth = SCREEN_WIDTH / 2;
     GLfloat halfScreenHeight = SCREEN_HEIGHT / 2;
+    vector<GLfloat> newp = {randx,randy,randz};
     
     while ( !glfwWindowShouldClose( window ) )
     {
@@ -111,14 +123,38 @@ int main( void )
                 break;
             case 3:
                 glPushMatrix( );
-
                 glTranslatef( halfScreenWidth, halfScreenHeight, -500 );
                 glRotatef( rotationX, 1, 0, 0 );
                 glRotatef( rotationY, 0, 1, 0 );
                 glTranslatef( -halfScreenWidth, -halfScreenHeight, 500 );
-
+                
+                //draw marching cube
                 DrawGrid3D(halfScreenWidth, halfScreenHeight, -500, CELL_SZIE);
                 
+                //draw points
+                if (p_click){
+                    newp = {randx,randy,randz};
+                    p_click = 0;
+                }
+                if(cubeNum > (2*GRID_SCALE +1)){
+                    float dis = sdf(newp[0],newp[1],newp[2]);
+                    if (abs(dis) > 1){
+                        if (dis > 0){
+                            newp = movePoint(newp,0.001,"in");
+                        }
+                        else{
+                            newp = movePoint(newp,0.001,"out");
+                        }
+                    }
+                    GLfloat temparr[6] = {randx,randy,randz, newp.at(0),newp.at(1),newp.at(2)};
+                    glColor3f(0.0,1.0,1.0);
+                    glEnable(GL_PROGRAM_POINT_SIZE);
+                    glPointSize(12);
+                    glEnableClientState( GL_VERTEX_ARRAY );
+                    glVertexPointer( 3, GL_FLOAT, 0, temparr);
+                    glDrawArrays(GL_POINTS, 0, 2);
+                    glDrawArrays(GL_LINES, 0, 2);
+                }
                 glPopMatrix();
                 break;
         }
@@ -162,137 +198,16 @@ GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int m
                 break;
             case GLFW_KEY_D:
                 Dimension = 5-Dimension;
+                cubeNum = 1;
                 break;
             case GLFW_KEY_P:
+                p_click = 1;
                 randx = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_WIDTH/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
                 randy = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_HEIGHT/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
                 randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
         }
     }
 }
-
-//********************************
-//*******              ***********
-//*******    3D draw   ***********
-//*******              ***********
-//********************************
-GLvoid DrawGrid3D(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLint edgeLength )
-{
-    GLint count = 0;
-    for (int i = -GRID_SCALE; i <= GRID_SCALE; i++)
-    {
-        for (int j = -GRID_SCALE; j <= GRID_SCALE; j++)
-        {
-            for (int k = -GRID_SCALE; k <= GRID_SCALE; k++)
-            {
-                DrawCube( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength );
-                DrawLines3D( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength );
-            }
-        }
-        count++;
-        if(count == cubeNum){
-            return ;
-        }
-    }
-    if(cubeNum > (2*GRID_SCALE +1)){
-        DrawPoint(randx, randy, randz);
-    }
-}
-
-GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
-{
-    GLfloat halfSideLength = edgeLength * 0.5f;
-
-    GLfloat vertices[] =
-    {
-        // front face
-        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top right
-        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom right
-        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-        
-        // back face
-        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top left
-        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom left
-        
-        // left face
-        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-        
-        // right face
-        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
-        
-        // top face
-        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
-        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
-        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // bottom right
-        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // bottom left
-        
-        // top face
-        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // top left
-        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // top right
-        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
-        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength  // bottom left
-    };
-    
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glColor3f(1.0, 1.0, 1.0);
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glVertexPointer( 3, GL_FLOAT, 0, vertices );
-    glDrawArrays( GL_QUADS, 0, 24 );
-    glDisableClientState( GL_VERTEX_ARRAY );
-}
-
-GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
-{
-    extern GLint triTable3D[256][16];
-    
-    GLfloat *lineVertices = new GLfloat[12*3];
-    
-    GLint edgeCount = 0;
-    GLint vertices = 0;
-    
-    GLfloat **verticelist = cellVertices3D(centerPosX,centerPosY,centerPosZ,edgeLength);
-    
-    for (int i =0; i<8; i++)
-    {
-        if(sdf(verticelist[i][0], verticelist[i][1], verticelist[i][2]) >= 0)
-        {
-            vertices += pow(2,i);
-        }
-    }
-    
-    for (int i =0,j =0; i< 16; i++)
-    {
-        if (triTable3D[vertices][i] != -1)
-        {
-            lineVertices[j] = EdgePos(triTable3D[vertices][i], verticelist)[0];
-            lineVertices[j+1] = EdgePos(triTable3D[vertices][i], verticelist)[1];
-            lineVertices[j+2] = EdgePos(triTable3D[vertices][i], verticelist)[2];
-            edgeCount++;
-        }
-        j= j+3;
-    }
-    
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glColor3f(1.0, 0.0, 0.0);
-    glVertexPointer( 3, GL_FLOAT, 0, lineVertices );
-    glDrawArrays( GL_LINE_LOOP, 0, edgeCount );
-    glDisableClientState( GL_VERTEX_ARRAY );
-    //printf("%f\n", &lineVertices[1]);
-    //return lineVertices;
-}
-
-
-
-
 
 //********************************
 //*******              ***********
@@ -376,23 +291,181 @@ GLvoid DrawLines2D( GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength)
 
 
 
-
-
-GLfloat *movePointOneStep(GLfloat x, GLfloat y, GLfloat z)
+//********************************
+//*******              ***********
+//*******    3D draw   ***********
+//*******              ***********
+//********************************
+GLvoid DrawGrid3D(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLint edgeLength )
 {
-    GLfloat *newp = new GLfloat[3];
-    GLfloat normal[3] = {x-SCREEN_WIDTH/2, y-SCREEN_HEIGHT/2, z-SCREEN_DEEPTH};
-    GLfloat normal_dis, dis;
+    extern GLfloat sdfDis[7*7*7][8];
+    //GLfloat *sdfDis_new = new GLfloat[8];
+    GLint count = 0;
+    for (int i = -GRID_SCALE; i <= GRID_SCALE; i++)
+    {
+        for (int j = -GRID_SCALE; j <= GRID_SCALE; j++)
+        {
+            for (int k = -GRID_SCALE; k <= GRID_SCALE; k++)
+            {
+//                GLfloat **verticelist = cellVertices3D(centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength);
+//
+//                for (int v = 0; v<8; v++){
+//                    sdfDis[(i+3)*(j+3)*(k+3)][v] = sdf(verticelist[v][0], verticelist[v][1], verticelist[v][2]);
+//                }
+//
+//                //check point in cube
+//                if (randx <= (centerPosX+edgeLength*i +edgeLength/2) && randx >= (centerPosX+edgeLength*i -edgeLength/2) &&
+//                    randy <= (centerPosY+edgeLength*j +edgeLength/2) && randy >= (centerPosY+edgeLength*j -edgeLength/2) &&
+//                    randz <= (centerPosZ+edgeLength*k +edgeLength/2) && randz >= (centerPosZ+edgeLength*k -edgeLength/2))
+//                {
+//                    //printf("%d,%d,%d/n", i,j,k);
+//                    for (int v = 0; v<8; v++){
+//                        sdfDis_new[v] = sdf(verticelist[v][0], verticelist[v][1], verticelist[v][2]);
+//                    }
+//                    //printf("%f %f %f %f****",sdfDis_new[0],sdfDis_new[1],sdfDis_new[2],sdfDis_new[3]);
+//                }
+                DrawCube( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength );
+                DrawLines3D( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength );
+            }
+        }
+        count++;
+        if(count == cubeNum){
+            return ;
+        }
+    }
+//    if(cubeNum > (2*GRID_SCALE +1)){
+//        DrawPoints();
+//    }
+}
 
-    normal_dis = sdf(x, y, z);
+GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
+{
+    GLfloat halfSideLength = edgeLength * 0.5f;
 
-    dis = sqrt(pow(normal[0],2) + pow(normal[1],2) + pow(normal[2],2));
-    //printf("%f %f/n", normal_dis, dis);
+    GLfloat vertices[] =
+    {
+        // front face
+        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top right
+        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom right
+        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+        
+        // back face
+        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top left
+        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom left
+        
+        // left face
+        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+        
+        // right face
+        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // bottom left
+        
+        // top face
+        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // top left
+        centerPosX - halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // top right
+        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ - halfSideLength, // bottom right
+        centerPosX + halfSideLength, centerPosY + halfSideLength, centerPosZ + halfSideLength, // bottom left
+        
+        // top face
+        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength, // top left
+        centerPosX - halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // top right
+        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ - halfSideLength, // bottom right
+        centerPosX + halfSideLength, centerPosY - halfSideLength, centerPosZ + halfSideLength  // bottom left
+    };
     
-    newp[0] = x - normal_dis/dis * x + SCREEN_WIDTH/2;
-    newp[1] = y - normal_dis/dis * y + SCREEN_HEIGHT/2;
-    newp[2] = z - normal_dis/dis * z + SCREEN_DEEPTH;
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glColor3f(1.0, 1.0, 1.0);
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glVertexPointer( 3, GL_FLOAT, 0, vertices );
+    glDrawArrays( GL_QUADS, 0, 24 );
+    glDisableClientState( GL_VERTEX_ARRAY );
+}
+
+GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
+{
+    extern GLint triTable3D[256][16];
+    GLfloat *lineVertices = new GLfloat[12*3];
+    GLint edgeCount = 0;
+    GLint vertices = 0;
+    GLfloat **verticelist = cellVertices3D(centerPosX,centerPosY,centerPosZ,edgeLength);
+    
+    for (int i =0; i<8; i++)
+    {
+        if(sdf(verticelist[i][0], verticelist[i][1], verticelist[i][2]) >= 0)
+        {
+            vertices += pow(2,i);
+        }
+    }
+    
+    for (int i =0,j =0; i< 16; i++)
+    {
+        if (triTable3D[vertices][i] != -1)
+        {
+            lineVertices[j] = EdgePos(triTable3D[vertices][i], verticelist)[0];
+            lineVertices[j+1] = EdgePos(triTable3D[vertices][i], verticelist)[1];
+            lineVertices[j+2] = EdgePos(triTable3D[vertices][i], verticelist)[2];
+            edgeCount++;
+        }
+        j= j+3;
+    }
+    
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glColor3f(1.0, 0.0, 0.0);
+    glVertexPointer( 3, GL_FLOAT, 0, lineVertices );
+    glDrawArrays( GL_LINE_LOOP, 0, edgeCount );
+    glDisableClientState( GL_VERTEX_ARRAY );
+}
+
+
+vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir)
+{
+    vector<GLfloat> newp;
+    
+    if (dir == "in"){
+        newp.push_back(point.at(0) + timestep * (SCREEN_WIDTH/2 - point.at(0)));
+        newp.push_back(point.at(1) + timestep * (SCREEN_HEIGHT/2 - point.at(1)));
+        newp.push_back(point.at(2) + timestep * (SCREEN_DEEPTH - point.at(2)));
+    }
+    else{
+        newp.push_back(point.at(0) + timestep * -(SCREEN_WIDTH/2 - point.at(0)));
+        newp.push_back(point.at(1) + timestep * -(SCREEN_HEIGHT/2 - point.at(1)));
+        newp.push_back(point.at(2) + timestep * -(SCREEN_DEEPTH - point.at(2)));
+    }
+    
     return newp;
+}
+
+
+GLvoid DrawPoints()
+{
+    GLfloat newDot[] = {randx,randy,randz};
+    
+    
+    while (sdf(newDot[0],newDot[1],newDot[2])  > 0.1){
+        newDot[0]++;
+        newDot[1]++;
+        newDot[2]++;
+        
+        
+        GLfloat temparr[6] = {randx,randy,randz, newDot[0],newDot[1],newDot[2]};
+        // Draw a random point
+        glColor3f(1.0,0.0,0.0);
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glPointSize(12);
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glVertexPointer( 3, GL_FLOAT, 0, temparr);
+        glDrawArrays(GL_POINTS, 0, 2);
+        glDrawArrays(GL_LINES, 0, 2);
+    }
+   
 }
 
 GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z)
@@ -407,56 +480,6 @@ GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z)
     glDisableClientState( GL_VERTEX_ARRAY );
     glDisable( GL_POINT_SMOOTH );
 }
-
-GLvoid DrawPoints(GLfloat x, GLfloat y, GLfloat z)
-{
-    //GLfloat pointVertex[] = { x,y,z};
-//    GLfloat *pointVertex = new GLfloat[3];
-//    pointVertex[0] = x;
-//    pointVertex[1] = y;
-//    if (Dimension == 3){
-//        pointVertex[1] = z;
-//    }
-//    glPolygonMode( GL_FRONT_AND_BACK, GL_POINT );
-//    glColor3f(0.0, 1.0, 1.0);
-//    glEnable( GL_POINT_SMOOTH );
-//    glEnableClientState( GL_VERTEX_ARRAY );
-//    glPointSize( 50 );
-//    glVertexPointer( 3, GL_FLOAT, 0, pointVertex );
-//    glDrawArrays( GL_POINTS, 0, 1 );
-//    glDisableClientState( GL_VERTEX_ARRAY );
-//    glDisable( GL_POINT_SMOOTH );
-}
-
-
-
-
-//GLvoid printtext(int x, int y, std::string String)
-//{
-//    //(x,y) is from the bottom left of the window
-//    glMatrixMode(GL_PROJECTION);
-//    glPushMatrix();
-//    glLoadIdentity();
-//    glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -1.0f, 1.0f);
-//
-//    glMatrixMode(GL_MODELVIEW);
-//    glPushMatrix();
-//
-//    glLoadIdentity();
-//    glPushAttrib(GL_DEPTH_TEST);
-//    glDisable(GL_DEPTH_TEST);
-//
-//    glRasterPos2f(x,y);
-//    for (int i=0; i<String.size(); i++)
-//    {
-//        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, String[i]);
-//    }
-//    glPopAttrib();
-//    glMatrixMode(GL_PROJECTION);
-//    glPopMatrix();
-//    glMatrixMode(GL_MODELVIEW);
-//    glPopMatrix();
-//}
 
 
 
