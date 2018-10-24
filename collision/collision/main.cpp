@@ -11,7 +11,7 @@
 
 GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int mods );
 GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
-GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength );
+GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
 GLint CollisionDetect(GLfloat x, GLfloat y, GLfloat z);
 
 GLfloat rotationX = 10.0f;
@@ -67,9 +67,9 @@ int main( void )
         glClear( GL_COLOR_BUFFER_BIT );
         
         double seconds = glfwGetTime();
-        
+
         if (hit == 0){
-            if (curY > 15){
+            if (curY > 15+100){
                 curY = SCREEN_HEIGHT-15 - 0.5*9.8*pow((seconds-hitS),2);
             }
             else{
@@ -80,7 +80,7 @@ int main( void )
         }
         else{
             if (curY < SCREEN_HEIGHT-15){
-                curY = 15 + v*(seconds-hitS) - 0.5*9.8*pow((seconds-hitS),2);
+                curY = 15+100 + v*(seconds-hitS) - 0.5*9.8*pow((seconds-hitS),2);
             }
             else{
                 hit = 1-hit;
@@ -89,6 +89,8 @@ int main( void )
         }
         
         DrawCube( curX, curY, curZ, 30 );
+        DrawSquare(320, 100, curZ, 200);
+        
         glfwSwapBuffers( window );
         glfwPollEvents( );
     }
@@ -100,27 +102,6 @@ GLint CollisionDetect(GLfloat x, GLfloat y, GLfloat z)
 {
     return 1;
 }
-
-GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength )
-{
-    GLfloat halfSideLength = edgeLength * 0.5f;
-    
-    GLfloat vertices[] =
-    {
-        centerPosX + halfSideLength, centerPosY + halfSideLength, 0.0,
-        centerPosX - halfSideLength, centerPosY + halfSideLength, 0.0,
-        centerPosX - halfSideLength, centerPosY - halfSideLength, 0.0,
-        centerPosX + halfSideLength, centerPosY - halfSideLength, 0.0,
-    };
-    
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    glColor3f(1.0, 1.0, 1.0);
-    glEnableClientState( GL_VERTEX_ARRAY ); // tell OpenGL that you're using a vertex array for fixed-function attribute
-    glVertexPointer( 3, GL_FLOAT, 0, vertices ); // point to the vertices to be used
-    glDrawArrays( GL_QUADS, 0, 4 ); // draw the vertixes
-    glDisableClientState( GL_VERTEX_ARRAY ); // tell OpenGL that you're finished using the vertex arrayattribute
-}
-
 
 GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength )
 {
@@ -173,19 +154,19 @@ GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLf
 }
 
 
-//GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength )
-//{
-//    GLfloat vertices[] =
-//    {
-//        centerPosX-edgeLength, centerPosY , -500-edgeLength,
-//        centerPosX+edgeLength, centerPosY , -500-edgeLength,
-//        centerPosX+edgeLength, centerPosY , -500+edgeLength,
-//        centerPosX-edgeLength, centerPosY , -500+edgeLength,
-//    };
-//    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-//    glColor3f(1.0, 1.0, 1.0);
-//    glEnableClientState( GL_VERTEX_ARRAY );
-//    glVertexPointer( 3, GL_FLOAT, 0, vertices );
-//    glDrawArrays( GL_QUADS, 0, 4 );
-//    glDisableClientState( GL_VERTEX_ARRAY );
-//}
+GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength )
+{
+    GLfloat vertices[] =
+    {
+        centerPosX-edgeLength, centerPosY , -500-edgeLength,
+        centerPosX+edgeLength, centerPosY , -500-edgeLength,
+        centerPosX+edgeLength, centerPosY , -500+edgeLength,
+        centerPosX-edgeLength, centerPosY , -500+edgeLength,
+    };
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glColor3f(1.0, 1.0, 1.0);
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glVertexPointer( 3, GL_FLOAT, 0, vertices );
+    glDrawArrays( GL_QUADS, 0, 4 );
+    glDisableClientState( GL_VERTEX_ARRAY );
+}
