@@ -25,7 +25,6 @@ using namespace std;
 #define MAX_CHAR 128
 
 
-
 GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
 GLvoid DrawGrid3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLint edgeLength );
 GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
@@ -130,34 +129,35 @@ int main( void )
                 
                 //draw marching cube
                 DrawGrid3D(halfScreenWidth, halfScreenHeight, -500, CELL_SZIE);
-                
-                //draw points
-                if (p_click){
-                    newp = {randx,randy,randz};
-                    p_click = 0;
-                }
-                if(cubeNum > (2*GRID_SCALE +1)){
-                    float dis = sdf(newp[0],newp[1],newp[2]);
-                    if (abs(dis) > 1){
-                        if (dis > 0){
-                            newp = movePoint(newp,0.001,"in");
-                        }
-                        else{
-                            newp = movePoint(newp,0.001,"out");
-                        }
-                    }
-                    GLfloat temparr[6] = {randx,randy,randz, newp.at(0),newp.at(1),newp.at(2)};
-                    glColor3f(0.0,1.0,1.0);
-                    glEnable(GL_PROGRAM_POINT_SIZE);
-                    glPointSize(12);
-                    glEnableClientState( GL_VERTEX_ARRAY );
-                    glVertexPointer( 3, GL_FLOAT, 0, temparr);
-                    glDrawArrays(GL_POINTS, 0, 2);
-                    glDrawArrays(GL_LINES, 0, 2);
-                }
+            
                 glPopMatrix();
                 break;
         }
+        //draw points
+        if (p_click){
+            newp = {randx,randy,randz};
+            p_click = 0;
+        }
+        if(cubeNum > (2*GRID_SCALE +1)){
+            float dis = sdf(newp[0],newp[1],newp[2]);
+            if (abs(dis) > 1){
+                if (dis > 0){
+                    newp = movePoint(newp,0.001,"in");
+                }
+                else{
+                    newp = movePoint(newp,0.001,"out");
+                }
+            }
+            GLfloat temparr[6] = {randx,randy,randz, newp.at(0),newp.at(1),newp.at(2)};
+            glColor3f(0.0,1.0,1.0);
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glPointSize(12);
+            glEnableClientState( GL_VERTEX_ARRAY );
+            glVertexPointer( 3, GL_FLOAT, 0, temparr);
+            glDrawArrays(GL_POINTS, 0, 2);
+            glDrawArrays(GL_LINES, 0, 2);
+        }
+        
         glfwSwapBuffers( window );
         glfwPollEvents( );
     }
@@ -555,7 +555,7 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
             formula = sqrt(pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2) + pow(z-(-500),2)) - SPHERE_R;
         }
         else if (shapeId == 1){
-            formula = pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2) + pow(z-(-500),2)/pow(ELLIPSE_Z,2) - 1;
+            formula = sqrt(pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2) + pow(z-(-500),2)/pow(ELLIPSE_Z,2)) - 1;
         }
         else if (shapeId == 2){
             formula = abs(x-SCREEN_WIDTH/2) + abs(y-SCREEN_HEIGHT/2) + abs(z-(-500)) -CUBE_R;
@@ -567,7 +567,7 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
             formula = sqrt(pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2)) - SPHERE_R;
         }
         else if (shapeId == 1){
-            formula = pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2) - 1;
+            formula = sqrt(pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2)) - 1;
         }
         else if (shapeId == 2){
             formula = abs(x-SCREEN_WIDTH/2) + abs(y-SCREEN_HEIGHT/2) -CUBE_R;
