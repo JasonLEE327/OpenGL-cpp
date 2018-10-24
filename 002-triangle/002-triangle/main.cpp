@@ -22,22 +22,18 @@ using namespace std;
 #define ELLIPSE_Z 70
 #define CUBE_R 100
 
-#define MAX_CHAR 128
-
 
 GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
 GLvoid DrawGrid3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLint edgeLength );
 GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength );
 
-GLvoid DrawPoints(GLfloat x, GLfloat y, GLfloat z);
-GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z);
+//GLvoid DrawPoints(GLfloat x, GLfloat y, GLfloat z);
+//GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z);
 //GLvoid DrawLine(GLfloat *p1, GLfloat *p2);
+//GLvoid printtext(int x, int y, std::string String);
+//GLvoid DrawPoints();
 
-GLvoid DrawPoints();
 vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir);
-
-
-GLvoid printtext(int x, int y, std::string String);
 
 GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength );
 GLvoid DrawGrid2D(GLint num, GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength );
@@ -73,8 +69,6 @@ GLfloat randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*G
 
 //GLfloat *sdfDis = new GLfloat[pow(2*GRID_SCALE+1,Dimension)];
 //GLfloat sdfDis[7*7*7][8];
-
-
 
 int main( void )
 {
@@ -229,9 +223,9 @@ GLvoid DrawGrid2D(GLint num, GLfloat centerPosX, GLfloat centerPosY, GLfloat edg
             return ;
         }
     }
-    if(cubeNum > (2*GRID_SCALE +1)){
-        DrawPoint(randx, randy, randz);
-    }
+//    if(cubeNum > (2*GRID_SCALE +1)){
+//        DrawPoint(randx, randy, randz);
+//    }
 }
 
 GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength )
@@ -444,42 +438,40 @@ vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir)
 }
 
 
-GLvoid DrawPoints()
-{
-    GLfloat newDot[] = {randx,randy,randz};
-    
-    
-    while (sdf(newDot[0],newDot[1],newDot[2])  > 0.1){
-        newDot[0]++;
-        newDot[1]++;
-        newDot[2]++;
-        
-        
-        GLfloat temparr[6] = {randx,randy,randz, newDot[0],newDot[1],newDot[2]};
-        // Draw a random point
-        glColor3f(1.0,0.0,0.0);
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glPointSize(12);
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glVertexPointer( 3, GL_FLOAT, 0, temparr);
-        glDrawArrays(GL_POINTS, 0, 2);
-        glDrawArrays(GL_LINES, 0, 2);
-    }
-   
-}
-
-GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z)
-{
-    GLfloat pointVertex[] = {x,y,z};
-    glColor3f(0.0, 1.0, 1.0);
-    glEnable( GL_POINT_SMOOTH );
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glPointSize( 10 );
-    glVertexPointer( 3, GL_FLOAT, 0, pointVertex );
-    glDrawArrays( GL_POINTS, 0, 1 );
-    glDisableClientState( GL_VERTEX_ARRAY );
-    glDisable( GL_POINT_SMOOTH );
-}
+//GLvoid DrawPoints()
+//{
+//    GLfloat newDot[] = {randx,randy,randz};
+//
+//    while (sdf(newDot[0],newDot[1],newDot[2])  > 0.1){
+//        newDot[0]++;
+//        newDot[1]++;
+//        newDot[2]++;
+//
+//        GLfloat temparr[6] = {randx,randy,randz, newDot[0],newDot[1],newDot[2]};
+//        // Draw a random point
+//        glColor3f(1.0,0.0,0.0);
+//        glEnable(GL_PROGRAM_POINT_SIZE);
+//        glPointSize(12);
+//        glEnableClientState( GL_VERTEX_ARRAY );
+//        glVertexPointer( 3, GL_FLOAT, 0, temparr);
+//        glDrawArrays(GL_POINTS, 0, 2);
+//        glDrawArrays(GL_LINES, 0, 2);
+//    }
+//
+//}
+//
+//GLvoid DrawPoint(GLfloat x, GLfloat y, GLfloat z)
+//{
+//    GLfloat pointVertex[] = {x,y,z};
+//    glColor3f(0.0, 1.0, 1.0);
+//    glEnable( GL_POINT_SMOOTH );
+//    glEnableClientState( GL_VERTEX_ARRAY );
+//    glPointSize( 10 );
+//    glVertexPointer( 3, GL_FLOAT, 0, pointVertex );
+//    glDrawArrays( GL_POINTS, 0, 1 );
+//    glDisableClientState( GL_VERTEX_ARRAY );
+//    glDisable( GL_POINT_SMOOTH );
+//}
 
 
 
@@ -536,7 +528,6 @@ GLfloat *EdgePos(GLint edge, GLfloat **vertices)
         newp[2] = 0;
     }
 
-    //GLfloat sdf2 = sdf(shapeId,p2[0],p2[1],p2[2]);
     do {
         sdfm = sdf(newp[0],newp[1],newp[2]);
         sdf1 = sdf(p1[0],p1[1],p1[2]);
@@ -551,7 +542,6 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
     GLfloat formula = 0.0;
     if(Dimension == 3){
         if (shapeId == 0){
-            //formula = pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2) + pow(z-(-500),2) - pow(SPHERE_R,2);   //sphere
             formula = sqrt(pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2) + pow(z-(-500),2)) - SPHERE_R;
         }
         else if (shapeId == 1){
@@ -563,7 +553,6 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
     }
     else{
         if (shapeId == 0){
-            //formula = pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2) + pow(z-(-500),2) - pow(SPHERE_R,2);   //sphere
             formula = sqrt(pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2)) - SPHERE_R;
         }
         else if (shapeId == 1){
