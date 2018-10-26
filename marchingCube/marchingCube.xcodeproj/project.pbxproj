@@ -34,7 +34,6 @@
 		4D45DC66216E921D00C1387E /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		4D45DC682175587100C1387E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		4DAAEBAD218174D500B5BE45 /* main.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cp; sourceTree = "<group>"; };
-		4DAAEBB12181C66500B5BE45 /* para.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = para.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +73,6 @@
 			isa = PBXGroup;
 			children = (
 				4D45DC56216E8F3200C1387E /* main.cpp */,
-				4DAAEBB12181C66500B5BE45 /* para.h */,
 			);
 			path = marchingCube;
 			sourceTree = "<group>";
@@ -271,6 +269,7 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/local/Cellar/glfw/3.2.1/include,
 					/usr/local/include,
+					/usr/local/include/eigen3,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -288,6 +287,7 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/local/Cellar/glfw/3.2.1/include,
 					/usr/local/include,
+					/usr/local/include/eigen3,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
