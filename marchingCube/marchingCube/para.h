@@ -16,6 +16,7 @@
 #define CELL_SZIE 30
 #define GRID_SCALE 3
 
+
 #define SPHERE_R 100
 
 #define ELLIPSE_X 100

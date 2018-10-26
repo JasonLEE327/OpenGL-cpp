@@ -23,7 +23,7 @@ vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir);
 
 
 GLfloat **cellVertices3D(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength);
-GLfloat **cellVertices2D(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength);
+GLfloat **cellVertices2D(GLfloat centerPosX, GLfloat centerPosY);
 GLfloat sdf(GLfloat x, GLfloat y, GLfloat z);
 
 GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int mods );
@@ -32,6 +32,7 @@ GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int m
 GLfloat sdfDIS(GLfloat x, GLfloat y, GLfloat z, GLfloat edgeLength );
 GLvoid GetDIS2D();
 GLvoid GetDIS3D();
+GLint PointInCell(GLfloat centerX, GLfloat centerY, GLfloat centerZ);
 
 //static const GLint EdgeConnection[12][2] =
 //{
@@ -44,10 +45,12 @@ GLfloat rotationX = 40.0f;
 GLfloat rotationY = 40.0f;
 
 GLint cubeNum = 1;
-GLint shapeId = 0; //0:sphere  1:
-GLint Dimension = 3;   //2:2d   3:3d
-GLint p_click = 0;  //change point
 GLint nodeNum = 0;
+GLint shapeId = 0; //0:sphere  1:
+GLint Dimension = 2;   //2:2d   3:3d
+GLboolean shapeChange = false;
+GLboolean DimChange = false;
+GLboolean p_click = false; //change point
 
 GLfloat randx = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_WIDTH/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
 GLfloat randy = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_HEIGHT/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
@@ -55,6 +58,9 @@ GLfloat randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*G
 
 GLfloat sdfDis2D[8*8];
 GLfloat sdfDis3D[8*8*8];
+
+GLint RandomPointIndex = 0;
+GLfloat *RandomPointCenter = new GLfloat[3];
 
 int main( void )
 {
@@ -88,66 +94,83 @@ int main( void )
     GLfloat halfScreenHeight = SCREEN_HEIGHT / 2;
     vector<GLfloat> newp = {randx,randy,randz};
     
+    GLboolean first = true;
+    
     while ( !glfwWindowShouldClose( window ) )
     {
         glClear( GL_COLOR_BUFFER_BIT );
         
-//        char string[64];
-//        sprintf(string, "something");
-//        printtext(10,10,string);
+        if (first || p_click || shapeChange || DimChange){
+            if (Dimension == 2){
+                GetDIS2D();
+                nodeNum = pow(2*GRID_SCALE+1+1,2);
+            }else{
+                GetDIS3D();
+                nodeNum = pow(2*GRID_SCALE+1+1,3);
+            }
+            first = false;
+            p_click = false;
+            shapeChange = false;
+            DimChange = false;
+        }
         
         switch (Dimension) {
             case 2:
-                GetDIS2D();
-                nodeNum = pow(2*GRID_SCALE+1+1,2);
+//                GetDIS2D();
+//                nodeNum = pow(2*GRID_SCALE+1+1,2);
                 
                 DrawGrid2D(halfScreenWidth, halfScreenHeight, CELL_SZIE);
                 break;
             case 3:
-                GetDIS3D();
-                nodeNum = pow(2*GRID_SCALE+1+1,3);
+//                GetDIS3D();
+//                nodeNum = pow(2*GRID_SCALE+1+1,3);
                 
                 glPushMatrix( );
                 glTranslatef( halfScreenWidth, halfScreenHeight, -500 );
                 glRotatef( rotationX, 1, 0, 0 );
                 glRotatef( rotationY, 0, 1, 0 );
                 glTranslatef( -halfScreenWidth, -halfScreenHeight, 500 );
-                
-                //draw marching cube
+
                 DrawGrid3D(halfScreenWidth, halfScreenHeight, -500, CELL_SZIE);
                 glPopMatrix();
                 break;
         }
         //draw points
-        if (p_click){
-            newp = {randx,randy,randz};
-            p_click = 0;
-        }
-        if(cubeNum > (2*GRID_SCALE +1)){
-            float dis = sdf(newp[0],newp[1],newp[2]);
-            if (abs(dis) > 1){
-                if (dis > 0){
-                    newp = movePoint(newp,0.001,"in");
-                }
-                else{
-                    newp = movePoint(newp,0.001,"out");
-                }
-            }
-            GLfloat temparr[6] = {randx,randy,randz, newp.at(0),newp.at(1),newp.at(2)};
-            glColor3f(0.0,1.0,1.0);
-            glEnable(GL_PROGRAM_POINT_SIZE);
-            glPointSize(12);
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glVertexPointer( 3, GL_FLOAT, 0, temparr);
-            glDrawArrays(GL_POINTS, 0, 2);
-            glDrawArrays(GL_LINES, 0, 2);
-        }
+//        if (p_click){
+//            newp = {randx,randy,randz};
+//            p_click = 0;
+//        }
+//        if(cubeNum > (2*GRID_SCALE +1)){
+//            float dis = sdf(newp[0],newp[1],newp[2]);
+//            if (abs(dis) > 1){
+//                if (dis > 0){
+//                    newp = movePoint(newp,0.0001,"in");
+//                }
+//                else{
+//                    newp = movePoint(newp,0.0001,"out");
+//                }
+//            }
+//            GLfloat temparr[6] = {randx,randy,randz, newp.at(0),newp.at(1),newp.at(2)};
+//            glColor3f(0.0,1.0,1.0);
+//            glEnable(GL_PROGRAM_POINT_SIZE);
+//            glPointSize(12);
+//            glEnableClientState( GL_VERTEX_ARRAY );
+//            glVertexPointer( 3, GL_FLOAT, 0, temparr);
+//            glDrawArrays(GL_POINTS, 0, 2);
+//            glDrawArrays(GL_LINES, 0, 2);
+//        }
         
         glfwSwapBuffers( window );
         glfwPollEvents( );
     }
     glfwTerminate( );
     return 0;
+}
+
+GLfloat *GetNearCenter(GLfloat x, GLfloat y, GLfloat z)
+{
+    GLfloat *center = new GLfloat[3];
+    return center;
 }
 
 GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int mods )
@@ -175,6 +198,7 @@ GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int m
                 cubeNum++;
                 break;
             case GLFW_KEY_S:
+                shapeChange = true;
                 cubeNum = 1;
                 shapeId++;
                 if (shapeId == 3){
@@ -182,11 +206,12 @@ GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int m
                 }
                 break;
             case GLFW_KEY_D:
+                DimChange = true;
                 Dimension = 5-Dimension;
                 cubeNum = 1;
                 break;
             case GLFW_KEY_P:
-                p_click = 1;
+                p_click = true;
                 randx = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_WIDTH/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
                 randy = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_HEIGHT/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
                 randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
@@ -230,7 +255,7 @@ GLfloat *EdgePos2D(GLint edge, GLfloat **vertices, GLint index)
 }
 
 
-GLfloat **cellVertices2D(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength)
+GLfloat **cellVertices2D(GLfloat centerPosX, GLfloat centerPosY)
 {
     GLfloat **vertices = new GLfloat*[4];
     GLint i = 0;
@@ -240,17 +265,17 @@ GLfloat **cellVertices2D(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLen
         vertices[i] = new GLfloat[2];
     }
     
-    vertices[i][0] = centerPosX+(-1)*(edgeLength/2);
-    vertices[i][1] = centerPosY+(1)*(edgeLength/2);
+    vertices[i][0] = centerPosX+(-1)*(CELL_SZIE/2);
+    vertices[i][1] = centerPosY+(1)*(CELL_SZIE/2);
     
-    vertices[i+1][0] = centerPosX+1*(edgeLength/2);
-    vertices[i+1][1] = centerPosY+1*(edgeLength/2);
+    vertices[i+1][0] = centerPosX+1*(CELL_SZIE/2);
+    vertices[i+1][1] = centerPosY+1*(CELL_SZIE/2);
     
-    vertices[i+2][0] = centerPosX+1*(edgeLength/2);
-    vertices[i+2][1] = centerPosY+(-1)*(edgeLength/2);
+    vertices[i+2][0] = centerPosX+1*(CELL_SZIE/2);
+    vertices[i+2][1] = centerPosY+(-1)*(CELL_SZIE/2);
     
-    vertices[i+3][0] = centerPosX+(-1)*(edgeLength/2);
-    vertices[i+3][1] = centerPosY+(-1)*(edgeLength/2);
+    vertices[i+3][0] = centerPosX+(-1)*(CELL_SZIE/2);
+    vertices[i+3][1] = centerPosY+(-1)*(CELL_SZIE/2);
     
     return vertices;
 }
@@ -261,7 +286,7 @@ GLvoid DrawLines2D( GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength, 
     GLfloat lineVertices[4*2];
     GLint edgeCount = 0;
     GLint vertices = 0;
-
+    
     
     GLfloat curDIS[] = {sdfDis2D[index+1], sdfDis2D[index+9], sdfDis2D[index+8], sdfDis2D[index]};
     for (int i=0;i<4;i++){
@@ -270,8 +295,8 @@ GLvoid DrawLines2D( GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength, 
         }
     }
     
-    GLfloat **verticelist = cellVertices2D(centerPosX,centerPosY,edgeLength);
-
+    GLfloat **verticelist = cellVertices2D(centerPosX,centerPosY);
+    
     for (int i =0,j =0; i< 4; i++)
     {
         if (triTable2D[vertices][i] != -1)
@@ -291,10 +316,25 @@ GLvoid DrawLines2D( GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength, 
     glDisableClientState( GL_VERTEX_ARRAY );
 }
 
+GLfloat BilinearInter(GLfloat *dis, GLfloat *v)
+{
+    GLfloat pdis = 0.0;
+    //first in x_direction
+    GLfloat fx1 = (v[0]+CELL_SZIE/2 - randx)/CELL_SZIE * dis[3] + (randx-v[0]+CELL_SZIE/2)/CELL_SZIE * dis[2];
+    GLfloat fx2 = (v[0]+CELL_SZIE/2 - randx)/CELL_SZIE * dis[0] + (randx-v[0]+CELL_SZIE/2)/CELL_SZIE * dis[1];
+    //next in y_direction
+    pdis = (v[1]+CELL_SZIE/2 - randy)/CELL_SZIE * fx1 + (randy-v[1]+CELL_SZIE/2)/CELL_SZIE * fx2;
+    return pdis;
+}
+
 GLvoid DrawGrid2D(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength )
 {
     GLint count = 0;
     GLint cubeIndex = 0;
+    
+//    GLint RandomPointIndex = 0;
+//    GLfloat *RandomPointCenter = new GLfloat[2];
+    
     for (int i = -GRID_SCALE; i <= GRID_SCALE; i++)
     {
         for (int j = -GRID_SCALE; j <= GRID_SCALE; j++)
@@ -302,11 +342,24 @@ GLvoid DrawGrid2D(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength )
             cubeIndex = (i+3)*8+(j+3);
             DrawSquare( centerPosX+edgeLength*i, centerPosY+edgeLength*j, edgeLength );
             DrawLines2D( centerPosX+edgeLength*i, centerPosY+edgeLength*j, edgeLength , cubeIndex);
+            
+            if (PointInCell(centerPosX+edgeLength*i, centerPosY+edgeLength*j, 0)){
+                RandomPointIndex = cubeIndex;
+                RandomPointCenter[0] = centerPosX+edgeLength*i;
+                RandomPointCenter[1] = centerPosY+edgeLength*j;
+            }
         }
         count++;
         if(count == cubeNum){return ; }
     }
+    if (count >= 2*GRID_SCALE+1){
+        GLfloat curRanDI[] = {sdfDis2D[RandomPointIndex+1], sdfDis2D[RandomPointIndex+9], sdfDis2D[RandomPointIndex+8], sdfDis2D[RandomPointIndex]};
+        GLfloat RanDIS = BilinearInter(curRanDI, RandomPointCenter);
+        if (RanDIS > 0){ printf("The pos of the random point is (%f,%f), it is OUTSIDE the shape\n" , randx, randy);}
+        else{ printf("The pos of the random point is (%f,%f), it is INSIDE the shape\n" , randx, randy); }
+    }
 }
+
 
 
 GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength )
@@ -382,7 +435,7 @@ GLfloat *EdgePos3D(GLint edge, GLfloat **vertices, GLint index)
             break;
         case 10:
             p = Interp3D(vertices[2], vertices[6], sdfDis3D[index+1+64], sdfDis3D[index+1+64+8]);
-      
+            
             break;
         case 11:
             p = Interp3D(vertices[3], vertices[7], sdfDis2D[index+1], sdfDis2D[index+1+8]);
@@ -433,14 +486,14 @@ GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, 
     GLint edgeCount = 0;
     GLint vertices = 0;
     GLfloat **verticelist = cellVertices3D(centerPosX,centerPosY,centerPosZ,edgeLength);
-   
+    
     //x->+64  y->+8  z->+1
     GLfloat curDIS[] = {sdfDis3D[index], sdfDis3D[index+64], sdfDis3D[index+1+64], sdfDis3D[index+1],
-                        sdfDis3D[index+8], sdfDis3D[index+64+8], sdfDis3D[index+1+64+8], sdfDis3D[index+1+8]};
+        sdfDis3D[index+8], sdfDis3D[index+64+8], sdfDis3D[index+1+64+8], sdfDis3D[index+1+8]};
     for (int i=0;i<8;i++){
         if (curDIS[i] > 0){vertices += pow(2,i);}
     }
-
+    
     for (int i =0,j =0; i< 16; i++)
     {
         if (triTable3D[vertices][i] != -1)
@@ -462,6 +515,27 @@ GLvoid DrawLines3D( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, 
     glDisableClientState( GL_VERTEX_ARRAY );
 }
 
+GLfloat TrilinearInter(GLfloat *dis, GLfloat *v)
+{
+    GLfloat xd = (randx - v[0]+CELL_SZIE/2)/CELL_SZIE;
+    GLfloat yd = (randy - v[1]+CELL_SZIE/2)/CELL_SZIE;
+    GLfloat zd = (randz - v[2]+CELL_SZIE/2)/CELL_SZIE;
+//    GLfloat yd = (randz - v[2]+CELL_SZIE/2)/CELL_SZIE;
+//    GLfloat zd = (randy - v[1]+CELL_SZIE/2)/CELL_SZIE;
+
+    
+    GLfloat c00 = dis[3]*(1-xd) + dis[2]*xd;
+    GLfloat c01 = dis[7]*(1-xd) + dis[6]*xd;
+    GLfloat c10 = dis[0]*(1-xd) + dis[1]*xd;
+    GLfloat c11 = dis[4]*(1-xd) + dis[5]*xd;
+    
+    GLfloat c0 = c00 * (1-yd) + c10 * yd;
+    GLfloat c1 = c01 * (1-yd) + c11 * yd;
+    
+    GLfloat c = c0 * (1-zd) + c1 * zd;
+    return c;
+}
+
 GLvoid DrawGrid3D(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLint edgeLength )
 {
     GLint count = 0;
@@ -474,22 +548,35 @@ GLvoid DrawGrid3D(GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GL
             {
                 index = ((i+3)*8+(j+3))*8+(k+3);
                 DrawCube( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength );
-                //DrawLines3D( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength );
                 DrawLines3D( centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k, edgeLength, index );
-              
+                if (PointInCell(centerPosX+edgeLength*i, centerPosY+edgeLength*j, centerPosZ+edgeLength*k)){
+                    RandomPointIndex = index;
+                    RandomPointCenter[0] = centerPosX+edgeLength*i;
+                    RandomPointCenter[1] = centerPosY+edgeLength*j;
+                    RandomPointCenter[2] = centerPosZ+edgeLength*k;
+                }
             }
+            
         }
+        
         count++;
-        if(count == cubeNum){
-            return ;
-        }
+        if(count == cubeNum){return ; }
+    }
+    if (count >= 2*GRID_SCALE+1){
+        GLfloat curRanDI[] = {sdfDis3D[RandomPointIndex], sdfDis3D[RandomPointIndex+64], sdfDis3D[RandomPointIndex+1+64], sdfDis3D[RandomPointIndex+1],
+            sdfDis3D[RandomPointIndex+8], sdfDis3D[RandomPointIndex+64+8], sdfDis3D[RandomPointIndex+1+64+8], sdfDis3D[RandomPointIndex+1+8]};
+        GLfloat RanDIS = TrilinearInter(curRanDI, RandomPointCenter);
+        //printf("%f %f %f\n", RandomPointCenter[0], RandomPointCenter[1],RandomPointCenter[2]);
+        //printf("%f %f\n", RanDIS, sdf(randx, randy, randz));
+        if (RanDIS > 0){ printf("The pos of the random point is (%f,%f,%f), it is OUTSIDE the shape\n" , randx, randy, randz);}
+        else{ printf("The pos of the random point is (%f,%f,%f), it is INSIDE the shape\n" , randx, randy, randz); }
     }
 }
 
 GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLfloat edgeLength)
 {
     GLfloat halfSideLength = edgeLength * 0.5f;
-
+    
     GLfloat vertices[] =
     {
         // front face
@@ -539,7 +626,6 @@ GLvoid DrawCube( GLfloat centerPosX, GLfloat centerPosY, GLfloat centerPosZ, GLf
 
 
 
-
 vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir)
 {
     vector<GLfloat> newp;
@@ -557,7 +643,6 @@ vector<GLfloat> movePoint(vector<GLfloat> point, GLfloat timestep, string dir)
     
     return newp;
 }
-
 
 
 
@@ -599,6 +684,21 @@ GLvoid GetDIS3D()
     }
 }
 
+GLint PointInCell(GLfloat centerX, GLfloat centerY, GLfloat centerZ)
+{
+    GLint flag = 0;
+    if (Dimension == 2){
+        if (randx >= centerX-CELL_SZIE/2 && randx <= centerX+CELL_SZIE/2 && randy >= centerY-CELL_SZIE/2 && randy<=centerY+CELL_SZIE/2){
+            flag = 1;
+        }
+    
+    }else{
+        if (randx >= centerX-CELL_SZIE/2 && randx <= centerX+CELL_SZIE/2 && randy >= centerY-CELL_SZIE/2 && randy<=centerY+CELL_SZIE/2 && randz >= centerZ-CELL_SZIE/2 && randz<=centerZ+CELL_SZIE/2){
+            flag = 1;
+        }
+    }
+    return flag;
+}
 
 GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
 {
@@ -918,5 +1018,6 @@ GLint triTable2D[16][4] =
     {3,0,-1,-1},
     {-1,-1,-1,-1}
 };
+
 
 
