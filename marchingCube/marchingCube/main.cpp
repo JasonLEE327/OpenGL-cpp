@@ -494,7 +494,8 @@ GLvoid DrawSquare(GLfloat centerPosX, GLfloat centerPosY, GLfloat edgeLength )
 
 VectorXf TrilinearInter(GLfloat *dis, GLfloat *v)
 {
-    VectorXf c(8,1); c << dis[3],dis[2],dis[0],dis[1],dis[7],dis[6],dis[4],dis[5];
+    //VectorXf c(8,1); c << dis[3],dis[2],dis[0],dis[1],dis[7],dis[6],dis[4],dis[5];
+    VectorXf c(8,1); c << dis[3],dis[2],dis[7],dis[6],dis[0],dis[1],dis[4],dis[5];
     MatrixXf X(8,8);
     
     GLfloat x0 = v[0] - CELL_SZIE/2;
@@ -787,7 +788,7 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
             formula = sqrt(pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2) + pow(z-(-500),2)) - SPHERE_R;
         }
         else if (shapeId == 1){
-            formula = abs(x-SCREEN_WIDTH/2) + abs(y-SCREEN_HEIGHT/2) + abs(z-(-500)) -CUBE_R;
+            formula = (abs(x-SCREEN_WIDTH/2) + abs(y-SCREEN_HEIGHT/2) + abs(z-(-500)) - CUBE_R) * sqrt(2)/2 * sqrt(2)/2;
         }
         else if (shapeId == 2){
             formula = sqrt(pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2) + pow(z-(-500),2)/pow(ELLIPSE_Z,2)) - 1;
@@ -798,7 +799,7 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
             formula = sqrt(pow(x-SCREEN_WIDTH/2,2) + pow(y-SCREEN_HEIGHT/2,2)) - SPHERE_R;
         }
         else if (shapeId == 1){
-            formula = abs(x-SCREEN_WIDTH/2) + abs(y-SCREEN_HEIGHT/2) -CUBE_R;
+            formula = (abs(x-SCREEN_WIDTH/2) + abs(y-SCREEN_HEIGHT/2) - CUBE_R) * sqrt(2)/2;
         }
         else if (shapeId == 2){
             formula = sqrt(pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2)) - 1;
