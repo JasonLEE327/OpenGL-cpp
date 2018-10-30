@@ -122,6 +122,7 @@ int main( void )
     {
         glClear( GL_COLOR_BUFFER_BIT );
         
+        //get signed distance
         if (first || p_click || shapeChange || DimChange){
             if (Dimension == 2){
                 GetDIS2D();
@@ -132,6 +133,7 @@ int main( void )
             }
         }
         
+        //marching cube to recover shape
         switch (Dimension) {
             case 2:
                 DrawGrid2D(halfScreenWidth, halfScreenHeight, CELL_SZIE);
@@ -147,23 +149,22 @@ int main( void )
                 break;
         }
         
+        //using bilinear/trilinear to get random point position
         if (cubeNum >= 2*GRID_SCALE+1 && (first || p_click || shapeChange || DimChange)){
             if (Dimension == 2){
                 GLfloat curRanDI[] = {sdfDis2D[RandomPointIndex+1], sdfDis2D[RandomPointIndex+9], sdfDis2D[RandomPointIndex+8], sdfDis2D[RandomPointIndex]};
-                //GLfloat RanDIS = BilinearInter(curRanDI, RandomPointCenter);
+                
                 a = BilinearInter(curRanDI, RandomPointCenter);
                 GLfloat RanDIS = a[0] + a[1]*randx + a[2]*randy + a[3]*randx*randy;
                 if (RanDIS > 0){ printf("The pos of the random point is (%f,%f), it is OUTSIDE the shape\n\n" , randx, randy);}
                 else{ printf("The pos of the random point is (%f,%f), it is INSIDE the shape\n\n" , randx, randy); }
-                //
             }
             else{
                 GLfloat curRanDI[] = {sdfDis3D[RandomPointIndex], sdfDis3D[RandomPointIndex+64], sdfDis3D[RandomPointIndex+1+64], sdfDis3D[RandomPointIndex+1],
                     sdfDis3D[RandomPointIndex+8], sdfDis3D[RandomPointIndex+64+8], sdfDis3D[RandomPointIndex+1+64+8], sdfDis3D[RandomPointIndex+1+8]};
-                //GLfloat RanDIS = TrilinearInter(curRanDI, RandomPointCenter);
+        
                 a = TrilinearInter(curRanDI, RandomPointCenter);
                 GLfloat RanDIS = a[0] + a[1]*randx + a[2]*randy + a[3]*randz + a[4]*randx*randy + a[5]*randx*randz + a[6]*randy*randz + a[7]*randx*randy*randz;
-                //printf("%f %f\n", RanDIS, sdf(randx, randy, randz));
                 if (RanDIS > 0){ printf("The pos of the random point is (%f,%f,%f), it is OUTSIDE the shape\n\n" , randx, randy, randz);}
                 else{ printf("The pos of the random point is (%f,%f,%f), it is INSIDE the shape\n\n" , randx, randy, randz); }
             }
@@ -176,6 +177,7 @@ int main( void )
             DimChange = false;
         }
         
+        //draw point's movement with Gradient Descent
         if (cubeNum > 2*GRID_SCALE+1){
             if (Dimension == 2){
                 GLfloat curDis = a[0] + a[1]*newp[0] + a[2]*newp[1] + a[3]*newp[0]*newp[1];
@@ -206,8 +208,6 @@ int main( void )
             glDrawArrays(GL_POINTS, 0, 2);
             glDrawArrays(GL_LINES, 0, 2);
         }
-        
-        //draw points
         
         glfwSwapBuffers( window );
         glfwPollEvents( );
