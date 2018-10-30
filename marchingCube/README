@@ -1,0 +1,8 @@
+1) Using given signed distance to recover a 2D/3D shape;
+2) Generating a random point, using Bilinear/Trilinear to determine the position of this point(inside or outside of the shape);
+3) Using gradient descent to move the point to the boundary.
+
+Operation:
+d: change dimension
+s: change shape
+p: change random point 
