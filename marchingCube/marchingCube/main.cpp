@@ -167,7 +167,7 @@ int main( void )
                 if (RanDIS > 0){ printf("The pos of the random point is (%f,%f,%f), it is OUTSIDE the shape\n\n" , randx, randy, randz);}
                 else{ printf("The pos of the random point is (%f,%f,%f), it is INSIDE the shape\n\n" , randx, randy, randz); }
             }
-            if (p_click){
+            if (p_click || shapeChange || DimChange){
                 newp = {randx,randy,randz};
             }
             first = false;
@@ -179,7 +179,7 @@ int main( void )
         if (cubeNum > 2*GRID_SCALE+1){
             if (Dimension == 2){
                 GLfloat curDis = a[0] + a[1]*newp[0] + a[2]*newp[1] + a[3]*newp[0]*newp[1];
-                if ( abs(curDis) > 1){
+                if ( abs(curDis) > 0.1){
                     if(curDis > 0){
                         newp = MoveByGD2D(a,newp,1);
                     }else{
@@ -280,11 +280,17 @@ GLvoid keyCallback( GLFWwindow *window, int key, int scancode, int action, int m
                 if (shapeId == 3){
                     shapeId = 0;
                 }
+                randx = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_WIDTH/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
+                randy = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_HEIGHT/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
+                randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
                 break;
             case GLFW_KEY_D:
                 DimChange = true;
                 Dimension = 5-Dimension;
                 cubeNum = 1;
+                randx = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_WIDTH/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
+                randy = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_HEIGHT/2 - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
+                randz = rand() % ((2*GRID_SCALE +1) * CELL_SZIE) + (SCREEN_DEEPTH - (2*GRID_SCALE +1)/2.0*CELL_SZIE);
                 break;
             case GLFW_KEY_P:
                 p_click = true;
@@ -792,6 +798,7 @@ GLfloat sdf(GLfloat x, GLfloat y, GLfloat z)
         }
         else if (shapeId == 2){
             formula = sqrt(pow((x-SCREEN_WIDTH/2),2)/pow(ELLIPSE_X,2) + pow(y-SCREEN_HEIGHT/2,2)/pow(ELLIPSE_Y,2) + pow(z-(-500),2)/pow(ELLIPSE_Z,2)) - 1;
+            //formula = sqrt(pow((x-SCREEN_WIDTH/2),2)*pow(ELLIPSE_Y,2)*pow(ELLIPSE_Z,2) + pow(y-SCREEN_HEIGHT/2,2)*pow(ELLIPSE_X,2)*pow(ELLIPSE_Z, 2) + pow(z-(-500),2)*pow(ELLIPSE_X,2)*pow(ELLIPSE_Y,2)) - ELLIPSE_X*ELLIPSE_Y*ELLIPSE_Z;
         }
     }
     else{
