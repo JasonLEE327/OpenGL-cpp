@@ -7,15 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4D45DC57216E8F3200C1387E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D45DC56216E8F3200C1387E /* main.cpp */; };
-		4D45DC61216E91C500C1387E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D45DC60216E91C500C1387E /* OpenGL.framework */; };
-		4D45DC65216E920A00C1387E /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D45DC64216E920A00C1387E /* libglfw.3.2.dylib */; };
-		4D45DC67216E921D00C1387E /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D45DC66216E921D00C1387E /* libGLEW.2.1.0.dylib */; };
-		4D45DC692175587100C1387E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D45DC682175587100C1387E /* GLUT.framework */; };
+		4D96A927219CCE3C004F643E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D96A926219CCE3C004F643E /* main.cpp */; };
+		4D96A934219CD08B004F643E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A933219CD08B004F643E /* OpenGL.framework */; };
+		4D96A936219CD091004F643E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A935219CD091004F643E /* GLUT.framework */; };
+		4D96A938219CD0C3004F643E /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A937219CD0C3004F643E /* libglfw.3.2.dylib */; };
+		4D96A93A219CD0D6004F643E /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A939219CD0D6004F643E /* libGLEW.2.1.0.dylib */; };
+		4D96A93D219CD0E0004F643E /* simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D96A93C219CD0E0004F643E /* simulator.cpp */; };
+		4D96A93F219CD0E3004F643E /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D96A93E219CD0E3004F643E /* display.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		4D45DC51216E8F3200C1387E /* CopyFiles */ = {
+		4D96A921219CCE3C004F643E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -27,63 +29,67 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4D45DC53216E8F3200C1387E /* marchingCube */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = marchingCube; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D45DC56216E8F3200C1387E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		4D45DC60216E91C500C1387E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		4D45DC64216E920A00C1387E /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../usr/local/Cellar/glfw/3.2.1/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
-		4D45DC66216E921D00C1387E /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
-		4D45DC682175587100C1387E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
-		4DAAEBAD218174D500B5BE45 /* main.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cp; sourceTree = "<group>"; };
+		4D96A923219CCE3C004F643E /* Domino */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Domino; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D96A926219CCE3C004F643E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		4D96A933219CD08B004F643E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		4D96A935219CD091004F643E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		4D96A937219CD0C3004F643E /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../usr/local/Cellar/glfw/3.2.1/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
+		4D96A939219CD0D6004F643E /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
+		4D96A93B219CD0E0004F643E /* simulation.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = simulation.hpp; path = "../../../../Desktop/cs523_TermProject/GLFW OpenGL/simulation.hpp"; sourceTree = "<group>"; };
+		4D96A93C219CD0E0004F643E /* simulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = simulator.cpp; path = "../../../../Desktop/cs523_TermProject/GLFW OpenGL/simulator.cpp"; sourceTree = "<group>"; };
+		4D96A93E219CD0E3004F643E /* display.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = display.cpp; path = "../../../../Desktop/cs523_TermProject/GLFW OpenGL/display.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4D45DC50216E8F3200C1387E /* Frameworks */ = {
+		4D96A920219CCE3C004F643E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D45DC692175587100C1387E /* GLUT.framework in Frameworks */,
-				4D45DC67216E921D00C1387E /* libGLEW.2.1.0.dylib in Frameworks */,
-				4D45DC65216E920A00C1387E /* libglfw.3.2.dylib in Frameworks */,
-				4D45DC61216E91C500C1387E /* OpenGL.framework in Frameworks */,
+				4D96A93A219CD0D6004F643E /* libGLEW.2.1.0.dylib in Frameworks */,
+				4D96A938219CD0C3004F643E /* libglfw.3.2.dylib in Frameworks */,
+				4D96A936219CD091004F643E /* GLUT.framework in Frameworks */,
+				4D96A934219CD08B004F643E /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4D45DC4A216E8F3200C1387E = {
+		4D96A91A219CCE3C004F643E = {
 			isa = PBXGroup;
 			children = (
-				4DAAEBAD218174D500B5BE45 /* main.cp */,
-				4D45DC55216E8F3200C1387E /* marchingCube */,
-				4D45DC54216E8F3200C1387E /* Products */,
-				4D45DC5F216E91C500C1387E /* Frameworks */,
+				4D96A925219CCE3C004F643E /* Domino */,
+				4D96A924219CCE3C004F643E /* Products */,
+				4D96A932219CD08B004F643E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		4D45DC54216E8F3200C1387E /* Products */ = {
+		4D96A924219CCE3C004F643E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4D45DC53216E8F3200C1387E /* marchingCube */,
+				4D96A923219CCE3C004F643E /* Domino */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4D45DC55216E8F3200C1387E /* marchingCube */ = {
+		4D96A925219CCE3C004F643E /* Domino */ = {
 			isa = PBXGroup;
 			children = (
-				4D45DC56216E8F3200C1387E /* main.cpp */,
+				4D96A926219CCE3C004F643E /* main.cpp */,
+				4D96A93E219CD0E3004F643E /* display.cpp */,
+				4D96A93B219CD0E0004F643E /* simulation.hpp */,
+				4D96A93C219CD0E0004F643E /* simulator.cpp */,
 			);
-			path = marchingCube;
+			path = Domino;
 			sourceTree = "<group>";
 		};
-		4D45DC5F216E91C500C1387E /* Frameworks */ = {
+		4D96A932219CD08B004F643E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4D45DC682175587100C1387E /* GLUT.framework */,
-				4D45DC66216E921D00C1387E /* libGLEW.2.1.0.dylib */,
-				4D45DC64216E920A00C1387E /* libglfw.3.2.dylib */,
-				4D45DC60216E91C500C1387E /* OpenGL.framework */,
+				4D96A939219CD0D6004F643E /* libGLEW.2.1.0.dylib */,
+				4D96A937219CD0C3004F643E /* libglfw.3.2.dylib */,
+				4D96A935219CD091004F643E /* GLUT.framework */,
+				4D96A933219CD08B004F643E /* OpenGL.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -91,67 +97,69 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4D45DC52216E8F3200C1387E /* marchingCube */ = {
+		4D96A922219CCE3C004F643E /* Domino */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4D45DC5A216E8F3200C1387E /* Build configuration list for PBXNativeTarget "marchingCube" */;
+			buildConfigurationList = 4D96A92A219CCE3C004F643E /* Build configuration list for PBXNativeTarget "Domino" */;
 			buildPhases = (
-				4D45DC4F216E8F3200C1387E /* Sources */,
-				4D45DC50216E8F3200C1387E /* Frameworks */,
-				4D45DC51216E8F3200C1387E /* CopyFiles */,
+				4D96A91F219CCE3C004F643E /* Sources */,
+				4D96A920219CCE3C004F643E /* Frameworks */,
+				4D96A921219CCE3C004F643E /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = marchingCube;
-			productName = "002-triangle";
-			productReference = 4D45DC53216E8F3200C1387E /* marchingCube */;
+			name = Domino;
+			productName = Domino;
+			productReference = 4D96A923219CCE3C004F643E /* Domino */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		4D45DC4B216E8F3200C1387E /* Project object */ = {
+		4D96A91B219CCE3C004F643E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = Jason;
 				TargetAttributes = {
-					4D45DC52216E8F3200C1387E = {
+					4D96A922219CCE3C004F643E = {
 						CreatedOnToolsVersion = 10.0;
 					};
 				};
 			};
-			buildConfigurationList = 4D45DC4E216E8F3200C1387E /* Build configuration list for PBXProject "marchingCube" */;
+			buildConfigurationList = 4D96A91E219CCE3C004F643E /* Build configuration list for PBXProject "Domino" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 4D45DC4A216E8F3200C1387E;
-			productRefGroup = 4D45DC54216E8F3200C1387E /* Products */;
+			mainGroup = 4D96A91A219CCE3C004F643E;
+			productRefGroup = 4D96A924219CCE3C004F643E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4D45DC52216E8F3200C1387E /* marchingCube */,
+				4D96A922219CCE3C004F643E /* Domino */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4D45DC4F216E8F3200C1387E /* Sources */ = {
+		4D96A91F219CCE3C004F643E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D45DC57216E8F3200C1387E /* main.cpp in Sources */,
+				4D96A93D219CD0E0004F643E /* simulator.cpp in Sources */,
+				4D96A927219CCE3C004F643E /* main.cpp in Sources */,
+				4D96A93F219CD0E3004F643E /* display.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		4D45DC58216E8F3200C1387E /* Debug */ = {
+		4D96A928219CCE3C004F643E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -202,7 +210,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -210,7 +218,7 @@
 			};
 			name = Debug;
 		};
-		4D45DC59216E8F3200C1387E /* Release */ = {
+		4D96A929219CCE3C004F643E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -255,24 +263,25 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
 		};
-		4D45DC5B216E8F3200C1387E /* Debug */ = {
+		4D96A92B219CCE3C004F643E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					/usr/local/include/eigen3,
+					$GLEWINC_PATH,
 					$GLFWINC_PATH,
+					$EIGEN_PATH,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
+					$GLFWLIB_PATH,
+					$GLEWLIB_PATH,
 					/usr/local/Cellar/glfw/3.2.1/lib,
 					/usr/local/Cellar/glew/2.1.0/lib,
 				);
@@ -280,17 +289,18 @@
 			};
 			name = Debug;
 		};
-		4D45DC5C216E8F3200C1387E /* Release */ = {
+		4D96A92C219CCE3C004F643E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					/usr/local/include/eigen3,
+					$GLEWINC_PATH,
 					$GLFWINC_PATH,
+					$EIGEN_PATH,
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
+					$GLFWLIB_PATH,
+					$GLEWLIB_PATH,
 					/usr/local/Cellar/glfw/3.2.1/lib,
 					/usr/local/Cellar/glew/2.1.0/lib,
 				);
@@ -301,25 +311,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4D45DC4E216E8F3200C1387E /* Build configuration list for PBXProject "marchingCube" */ = {
+		4D96A91E219CCE3C004F643E /* Build configuration list for PBXProject "Domino" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4D45DC58216E8F3200C1387E /* Debug */,
-				4D45DC59216E8F3200C1387E /* Release */,
+				4D96A928219CCE3C004F643E /* Debug */,
+				4D96A929219CCE3C004F643E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4D45DC5A216E8F3200C1387E /* Build configuration list for PBXNativeTarget "marchingCube" */ = {
+		4D96A92A219CCE3C004F643E /* Build configuration list for PBXNativeTarget "Domino" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4D45DC5B216E8F3200C1387E /* Debug */,
-				4D45DC5C216E8F3200C1387E /* Release */,
+				4D96A92B219CCE3C004F643E /* Debug */,
+				4D96A92C219CCE3C004F643E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 4D45DC4B216E8F3200C1387E /* Project object */;
+	rootObject = 4D96A91B219CCE3C004F643E /* Project object */;
 }
