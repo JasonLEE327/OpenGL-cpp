@@ -12,8 +12,6 @@
 		4D96A936219CD091004F643E /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A935219CD091004F643E /* GLUT.framework */; };
 		4D96A938219CD0C3004F643E /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A937219CD0C3004F643E /* libglfw.3.2.dylib */; };
 		4D96A93A219CD0D6004F643E /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D96A939219CD0D6004F643E /* libGLEW.2.1.0.dylib */; };
-		4D96A93D219CD0E0004F643E /* simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D96A93C219CD0E0004F643E /* simulator.cpp */; };
-		4D96A93F219CD0E3004F643E /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D96A93E219CD0E3004F643E /* display.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,9 +33,6 @@
 		4D96A935219CD091004F643E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		4D96A937219CD0C3004F643E /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../usr/local/Cellar/glfw/3.2.1/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		4D96A939219CD0D6004F643E /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
-		4D96A93B219CD0E0004F643E /* simulation.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = simulation.hpp; path = "../../../../Desktop/cs523_TermProject/GLFW OpenGL/simulation.hpp"; sourceTree = "<group>"; };
-		4D96A93C219CD0E0004F643E /* simulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = simulator.cpp; path = "../../../../Desktop/cs523_TermProject/GLFW OpenGL/simulator.cpp"; sourceTree = "<group>"; };
-		4D96A93E219CD0E3004F643E /* display.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = display.cpp; path = "../../../../Desktop/cs523_TermProject/GLFW OpenGL/display.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,9 +71,6 @@
 			isa = PBXGroup;
 			children = (
 				4D96A926219CCE3C004F643E /* main.cpp */,
-				4D96A93E219CD0E3004F643E /* display.cpp */,
-				4D96A93B219CD0E0004F643E /* simulation.hpp */,
-				4D96A93C219CD0E0004F643E /* simulator.cpp */,
 			);
 			path = Domino;
 			sourceTree = "<group>";
@@ -150,9 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D96A93D219CD0E0004F643E /* simulator.cpp in Sources */,
 				4D96A927219CCE3C004F643E /* main.cpp in Sources */,
-				4D96A93F219CD0E3004F643E /* display.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
