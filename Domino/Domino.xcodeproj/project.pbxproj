@@ -268,12 +268,14 @@
 					$GLEWINC_PATH,
 					$GLFWINC_PATH,
 					$EIGEN_PATH,
+					/usr/local/Cellar/glm/0.9.9.2/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					$GLFWLIB_PATH,
 					$GLEWLIB_PATH,
 					/usr/local/Cellar/glfw/3.2.1/lib,
 					/usr/local/Cellar/glew/2.1.0/lib,
+					/usr/local/Cellar/glm/0.9.9.2/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -287,12 +289,14 @@
 					$GLEWINC_PATH,
 					$GLFWINC_PATH,
 					$EIGEN_PATH,
+					/usr/local/Cellar/glm/0.9.9.2/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					$GLFWLIB_PATH,
 					$GLEWLIB_PATH,
 					/usr/local/Cellar/glfw/3.2.1/lib,
 					/usr/local/Cellar/glew/2.1.0/lib,
+					/usr/local/Cellar/glm/0.9.9.2/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
